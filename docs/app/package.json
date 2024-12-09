@@ -10,6 +10,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "@vvsk/fullstack": "^1.0.2"
+      "@vvsk/fullstack": "^1.0.3"
     }
   }
