@@ -1,13 +1,18 @@
+#! /usr/bin/env node
+
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const url = 'https://vvskchaitanya.github.io/fullstack.js/main.js';
+const file = "main.js";
 
 // Function to fetch, save, execute, and clean up the JavaScript file
-function fetchAndExecuteJS(url, localFileName) {
+function fetchAndExecuteJS() {
     return new Promise((resolve, reject) => {
-        const filePath = path.join(__dirname, localFileName);
+        const filePath = path.join(__dirname, file);
+        console.log(filePath);
 
         // Fetch the file from the URL
         https.get(url, (res) => {
@@ -37,9 +42,7 @@ function fetchAndExecuteJS(url, localFileName) {
                     fs.unlink(filePath, (unlinkError) => {
                         if (unlinkError) {
                             console.error(`Error deleting file: ${unlinkError.message}`);
-                        } else {
-                            console.log(`File deleted: ${filePath}`);
-                        }
+                        } 
                     });
                 }
             });
@@ -59,6 +62,6 @@ function fetchAndExecuteJS(url, localFileName) {
     });
 }
 
-fetchAndExecuteJS(url, file)
+fetchAndExecuteJS()
     .then((message) => console.log(message))
     .catch((error) => console.error(error.message));
