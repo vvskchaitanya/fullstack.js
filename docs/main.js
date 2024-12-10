@@ -72,20 +72,22 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-rl.question("Fullstack App Name: ", async (name) => {
+rl.question("Fullstack App Name: ", (name) => {
   name = name.toLowerCase().replace(" ","-");
   console.log("Creating Fullstack App: "+name);
   fs.mkdirSync(name);
-  try{
-    await fetchAndSaveFiles(baseUrl, files, name);
-    console.log('Created Fullstack App: '+name)
-  }catch(err){
-    console.error('Failed to create app '+name, err)
-  }
-  process.chdir(name);
-  execSync(
-    "npm install && npm start",
-    {stdio: 'inherit'}
-  );
-  rl.close();
+  fetchAndSaveFiles(baseUrl, files, name)
+  .then(()=>{
+    console.log('Created Fullstack App: '+name);
+    process.chdir(name);
+    execSync(
+      "npm install && npm start",
+      {stdio: 'inherit'}
+    );
+    rl.close();
+  })
+  .catch((err)=>{
+    console.error('Failed to create app '+name, err);
+    rl.close();
+  });
 });
