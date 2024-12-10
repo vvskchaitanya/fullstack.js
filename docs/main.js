@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const https = require('https');
+const readline = require('node:readline');
+const {execSync} = require("child_process");
 
 /**
  * Fetch a file using http or https.
