@@ -1,67 +1,85 @@
 const fs = require('fs');
-const readline = require('node:readline');
-const {execSync} = require("child_process");
-const https = require('https');
-const http = require('http');
 const path = require('path');
+const http = require('http');
+const https = require('https');
 
 /**
- * Fetches content from a URL and saves it as a file locally.
- * @param {string} url - The URL to fetch.
- * @param {string} outputDir - The directory to save the files.
+ * Fetch a file using http or https.
+ * @param {string} url - The URL of the file to fetch.
+ * @returns {Promise<Buffer>} - The file data as a Buffer.
  */
-function fetchAndSaveFile(url, outputDir) {
-  return new Promise((resolve, reject) => {
-      const protocol = url.startsWith('https') ? https : http;
-      const fileName = path.basename(url.split('?')[0]) || 'invalid';
-      const filePath = path.join(outputDir, fileName);
-      if(fileName=="invalid") return;
-      
-      protocol.get(url, (res) => {
-          if (res.statusCode !== 200) {
-              reject(new Error(`Failed to fetch ${url}. Status code: ${res.statusCode}`));
-              return;
-          }
-
-          const fileStream = fs.createWriteStream(filePath);
-          res.pipe(fileStream);
-
-          fileStream.on('finish', () => {
-              fileStream.close();
-              resolve(`Created File: ${filePath}`);
-          });
-
-          fileStream.on('error', (error) => {
-              reject(new Error(`Error creating file ${filePath}: ${error.message}`));
-          });
-      }).on('error', (error) => {
-          reject(new Error(`Error fetching ${url}: ${error.message}`));
-      });
-  });
+function fetchFile(url) {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith('https') ? https : http;
+        client.get(url, (res) => {
+            if (res.statusCode !== 200) {
+                reject(new Error(`Failed to fetch ${url}: ${res.statusCode}`));
+                return;
+            }
+            const data = [];
+            res.on('data', (chunk) => data.push(chunk));
+            res.on('end', () => resolve(Buffer.concat(data)));
+        }).on('error', reject);
+    });
 }
 
+/**
+ * Ensures that the directory structure exists for a given file path.
+ * @param {string} filePath - The file path for which to ensure directory structure.
+ */
+function ensureDirectoryExists(filePath) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+}
+
+/**
+ * Fetch and save files while recreating folder structure locally.
+ * @param {string} baseUrl - The base URL for fetching files.
+ * @param {string[]} filePaths - Array of file paths to fetch.
+ * @param {string} outputDir - Local directory to save files.
+ */
+async function fetchAndSaveFiles(baseUrl, filePaths, outputDir) {
+    for (const filePath of filePaths) {
+        const fullUrl = `${baseUrl}/${filePath}`;
+        const localPath = path.join(outputDir, filePath);
+
+        try {
+            const fileData = await fetchFile(fullUrl);
+
+            ensureDirectoryExists(localPath);
+            fs.writeFileSync(localPath, fileData);
+            console.log(`Created: ${localPath}`);
+        } catch (error) {
+            console.error(`Failed to fetch and create file: ${filePath}`, error.message);
+        }
+    }
+}
+
+const baseUrl = 'https://vvskchaitanya.github.io/fullstack.js/app'; 
 var files = [
-  "https://vvskchaitanya.github.io/fullstack.js/app/package.json",
-  "https://vvskchaitanya.github.io/fullstack.js/app/index.js"
-]
+    'package.json',
+    'index.js',
+    'file3.jpg'
+];
+
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-rl.question("Application Name: ", async (name) => {
+rl.question("Fullstack App Name: ", async (name) => {
   name = name.toLowerCase().replace(" ","-");
-  console.log("Creating Fullstack Application "+name);
+  console.log("Creating Fullstack App: "+name);
   fs.mkdirSync(name);
-  for (const url of files) {
-    try {
-        const message = await fetchAndSaveFile(url, name);
-        console.log(message);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
+  try{
+    await fetchAndSaveFiles(baseUrl, files, name);
+    console.log('Created Fullstack App: '+name)
+  }catch(err){
+    console.error('Failed to create app '+name, err)
+  }
   process.chdir(name);
   execSync(
     "npm install && npm start",
