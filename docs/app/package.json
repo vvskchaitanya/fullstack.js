@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "install": "npm install --no-bin-links",
+      "fetch": "npm install --no-bin-links",
       "start": "node index.js",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
