@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const readline = require('node:readline');
-const {execSync} = require("child_process");
+const {execSync,spawn} = require("child_process");
 
 /**
  * Fetch a file using http or https.
@@ -89,10 +89,11 @@ rl.question("Fullstack App Name: ", (name) => {
       "npm run fetch",
       {stdio: 'inherit'}
     );
-    execSync(
-      "npm run start",
-      {stdio: 'inherit'}
-    );
+    const child = spawn('npm', ['start'], { stdio: 'inherit' });
+
+    child.on('exit', (code) => {
+        console.log(`Process exited with code ${code}`);
+    });
     rl.close();
   })
   .catch((err)=>{
