@@ -24,37 +24,29 @@ function goto(path) {
         document.getElementById('app').innerHTML = '<h1>Page Not Found</h1>';
         return;
     }
+    else {
+        document.getElementById('app').innerHTML = page.template;
 
-    // Fetch and load the template
-    fetch(page.template)
-        .then(response => response.text())
-        .then(template => {
-            document.getElementById('app').innerHTML = template;
+        // Dynamically load the script
+        if (page.script) {
+             const script = document.createElement('script');
+             script.src = page.script;
+             script.type = 'text/javascript';
+             script.onload = () => console.log(`${page.script} loaded.`);
+             document.body.appendChild(script);
+        }
 
-            // Dynamically load the script
-            if (page.script) {
-                const script = document.createElement('script');
-                script.src = page.script;
-                script.type = 'text/javascript';
-                script.onload = () => console.log(`${page.script} loaded.`);
-                document.body.appendChild(script);
-            }
-
-            // Dynamically load the style
-            if (page.style) {
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = page.style;
-                document.head.appendChild(link);
-            }
-        })
-        .catch(error => {
-            console.error('Failed to load page template:', error);
-            document.getElementById('app').innerHTML = '<h1>Error loading page</h1>';
-        });
+       // Dynamically load the style
+       if (page.style) {
+             const link = document.createElement('link');
+             link.rel = 'stylesheet';
+             link.href = page.style;
+             document.head.appendChild(link);
+       }
+    }
 }
 
 // Example usage after pages are loaded
 setTimeout(() => {
-    goto('home'); // Replace '/example' with the desired path
-}, 1000); // Simulating a delay for pages to load
+    goto('home');
+}, 1000);
