@@ -85,6 +85,10 @@ rl.question("Fullstack App Name: ", (name) => {
   .then(()=>{
     console.log('Created Fullstack App: '+name);
     process.chdir(name);
+    execSync(
+      "npm run install",
+      {stdio: 'inherit'}
+    );
     rl.close();
   })
   .catch((err)=>{
