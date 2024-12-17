@@ -30,7 +30,8 @@ api=function(req, api, res){
 start = function(){
     compiler.compile();
     server.serve();
-    console.log("App Server Stared");
+    console.log("Serving - http://localhost:9999");
+    console.log("App Server Stared.");
 }
 
 module.exports = { start };
