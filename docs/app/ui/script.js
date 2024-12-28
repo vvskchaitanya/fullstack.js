@@ -19,29 +19,28 @@ fetch('ui/bundle.json')
 // Function to load a page based on the path
 function goto(path) {
     const page = pages.find(p => p.name === path);
-
+    var app = document.getElementById('app');
     if (!page) {
-        document.getElementById('app').innerHTML = '<h1>Page Not Found</h1>';
+        app.innerHTML = '<h1>Page Not Found</h1>';
         return;
     }
     else {
-        document.getElementById('app').innerHTML = page.template;
-
+        app.innerHTML = page.template;
         // Dynamically load the script
         if (page.script) {
              const script = document.createElement('script');
-             script.src = page.script;
+             script.innerHTML = page.script;
              script.type = 'text/javascript';
              script.onload = () => console.log(`${page.script} loaded.`);
-             document.body.appendChild(script);
+             app.appendChild(script);
         }
 
        // Dynamically load the style
        if (page.style) {
-             const link = document.createElement('link');
-             link.rel = 'stylesheet';
-             link.href = page.style;
-             document.head.appendChild(link);
+             const style = document.createElement('link');
+             style.rel = 'stylesheet';
+             style.innerHTML = page.style;
+             app.appendChild(style);
        }
     }
 }
