@@ -68,7 +68,8 @@ var files = [
     'ui/style.css',
     'ui/pages/home/template.html',
     'ui/pages/home/script.js',
-    'ui/pages/home/style.css'
+    'ui/pages/home/style.css',
+     'ui/loader.js'
 ];
 
 
