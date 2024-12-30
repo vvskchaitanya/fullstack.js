@@ -45,6 +45,8 @@ function goto(path) {
     }
 }
 
+Loader.init();
+
 // Example usage after pages are loaded
 setTimeout(() => {
     goto('home');
