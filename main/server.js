@@ -9,20 +9,15 @@ serve=function(){
         console.log("Request URL: "+req.url);
         if(url.indexOf("/ui/")==0){
           serve_ui(req.url,res);
-        }
-        else if(url.indexOf("/api/")==0){
-          console.log("hit api");
-          res.writeHead(200,{"Content-Type":"application/json"});
-          res.end(JSON.stringify({
-            data: 'Hello World!'
-          }));
-        }else if(url.indexOf("/favicon")==0){
-          res.writeHead(404);
-          res.end();
-        }else{
+        }else if(url.indexOf("/api/")==0){
+          serve_api(url,req,res);
+        }else if(url=="" || url=="/" || url=="/index.html"){
           var indexHtml = fs.existsSync("ui/index.html")?fs.readFileSync("ui/index.html"):"";
           res.writeHead(200, { 'Content-Type': 'text/html' });
           res.write(indexHtml);
+          res.end();
+        }else{
+          res.writeHead(404);
           res.end();
         }  
     });
@@ -31,7 +26,6 @@ serve=function(){
 
 serve_ui=function(url,res){
   const filePath = path.join('ui', url.replace('/ui/', ''));
-  console.log(filePath);
 
     // Get the file extension
     const ext = path.extname(filePath).toLowerCase();
@@ -72,6 +66,39 @@ serve_ui=function(url,res){
         res.end(data);
       });
     });
+}
+
+function serve_api(url, req, res) {
+    try {
+        // Parse the context path from the URL
+        const contextPath = new URL(url, `http://${req.headers.host}`).pathname;
+
+        // Remove '/api/' from the context path
+        const cleanedPath = contextPath.replace(/^\/api\//, '');
+
+        // Resolve the file path
+        const fileName = path.basename(cleanedPath) + '.js';
+        const filePath = path.join(__dirname, 'api', fileName);
+
+        // Check if the file exists
+        if (!fs.existsSync(filePath)) {
+            res.statusCode = 404;
+            res.end(`API file ${fileName} not found.`);
+            return;
+        }
+
+        // Require the file and execute the exported function
+        const apiHandler = require(filePath);
+        if (typeof apiHandler === 'function') {
+            apiHandler(req, res);
+        } else {
+            res.statusCode = 500;
+            res.end(`API file ${fileName} does not export a valid function.`);
+        }
+    } catch (error) {
+        res.statusCode = 500;
+        res.end(`Error processing API request: ${error.message}`);
+    }
 }
 
 module.exports = { serve };
