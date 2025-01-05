@@ -1,6 +1,6 @@
 {
     "name": "@vvsk/fullstack",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Fullstack.js is a JavaScript framework designed to simplify the development of full-stack applications, seamlessly integrating both front-end (UI) and back-end (API) components.",
     "main": "index.js",
     "scripts": {
