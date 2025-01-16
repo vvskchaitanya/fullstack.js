@@ -1,3 +1,3 @@
-const app = require("@vvsk/fullstack");
+const app = require("./imports/fullstack");
 
 app.start();

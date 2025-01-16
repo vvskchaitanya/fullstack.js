@@ -63,14 +63,17 @@ const baseUrl = 'https://vvskchaitanya.github.io/fullstack.js/app';
 var files = [
     'package.json',
     'index.js',
-    'ui/index.html',
-    'ui/script.js',
-    'ui/style.css',
-    'ui/pages/home/template.html',
-    'ui/pages/home/script.js',
-    'ui/pages/home/style.css',
-    'ui/shared/loader.js',
-    'ui/shared/logger.js'
+    'imports/server.js',
+    'imports/compiler.js',
+    'imports/fullstack.js',
+    'source/ui/index.html',
+    'source/ui/script.js',
+    'source/ui/style.css',
+    'source/ui/pages/home/template.html',
+    'source/ui/pages/home/script.js',
+    'source/ui/pages/home/style.css',
+    'source/ui/shared/loader.js',
+    'source/ui/shared/logger.js'
 ];
 
 
