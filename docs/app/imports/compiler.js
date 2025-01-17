@@ -15,14 +15,14 @@ var watch = [];
 compile = function(){
     /** Create TARGET */
     if (!fs.existsSync(TARGET)) {
-        fs.mkdirSync(TARGET, { recursive: true });
+        fs.mkdirSync(TARGET+UI, { recursive: true });
     }
 
     /** Copy complete imports/ui into target/ */
-    copyRecursive(IMPORTS+UI,TARGET);
+    copyRecursive(IMPORTS+UI,TARGET+UI);
 
     /** Copy complete source/resources into target */
-    copyRecursive(SOURCE+RESOURCES,TARGET);
+    copyRecursive(SOURCE+RESOURCES,TARGET+UI);
 
     /** Convert source/pages into target/bundle.json */
     bundle();
@@ -59,7 +59,7 @@ bundle=function(){
         watch = files;
         watcher();
     }
-    fs.writeFileSync(TARGET+"/bundle.json",JSON.stringify(bundle_output));
+    fs.writeFileSync(TARGET+UI+"/bundle.json",JSON.stringify(bundle_output));
 }
 
 watcher=function(){
