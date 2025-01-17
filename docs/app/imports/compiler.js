@@ -1,17 +1,41 @@
 const fs = require("fs");
-const options = { encoding: "UTF-8" };
+const { copyRecursive } = require('./file-util');
 
-const UI_PAGES = "source/ui/pages";
+
+const options = { encoding: "UTF-8" };
+const IMPORTS = "imports/"
+const SOURCE = "source/";
+const UI = "ui/"
+const PAGES="pages/"
+const RESOURCES = "resources/"
+const TARGET = "target/";
 
 var watch = [];
 
 compile = function(){
+    /** Create TARGET */
+    if (!fs.existsSync(TARGET)) {
+        fs.mkdirSync(TARGET, { recursive: true });
+    }
+
+    /** Copy complete imports/ui into target/ */
+    copyRecursive(IMPORTS+UI,TARGET);
+
+    /** Copy complete source/resources into target */
+    copyRecursive(SOURCE+RESOURCES,TARGET);
+
+    /** Convert source/pages into target/bundle.json */
+    bundle();
+}
+
+bundle=function(){
+    var UI_PAGES = SOURCE+UI+PAGES;
     if(!fs.existsSync(UI_PAGES)){
         console.log("Compiler: No Directory \""+UI_PAGES+"\"");
         return;
     }
     var pages = fs.readdirSync(UI_PAGES);
-    var bundle = { pages:[], components:[]};
+    var bundle_output = { pages:[]};
     var files = [];
     pages.forEach(page =>{
         var p = {};
@@ -30,20 +54,21 @@ compile = function(){
         });
         bundle.pages.push(p);
     });
-    if(watch.length==0){
+    /** Watch source file changes and recompile into bundle.json */
+    if(watch.length==0 && files.length!=0){
         watch = files;
         watcher();
     }
-    fs.writeFileSync("ui/bundle.json",JSON.stringify(bundle));
+    fs.writeFileSync(TARGET+"/bundle.json",JSON.stringify(bundle_output));
 }
 
 watcher=function(){
     watch.forEach(path=>{
         console.log(path);
         fs.watch(path, (event,file)=>{
-            compile();
+            bundle();
         });
     });
 }
-
+  
 module.exports = { compile };

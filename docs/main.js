@@ -63,17 +63,15 @@ const baseUrl = 'https://vvskchaitanya.github.io/fullstack.js/app';
 var files = [
     'package.json',
     'index.js',
+    'imports/file-util.js',
     'imports/server.js',
     'imports/compiler.js',
     'imports/fullstack.js',
-    'source/ui/index.html',
-    'source/ui/script.js',
-    'source/ui/style.css',
-    'source/ui/pages/home/template.html',
-    'source/ui/pages/home/script.js',
-    'source/ui/pages/home/style.css',
-    'source/ui/shared/loader.js',
-    'source/ui/shared/logger.js'
+    'imports/ui/index.html',
+    'imports/ui/script.js',
+    'imports/ui/style.css',
+    'imports/ui/shared/loader.js',
+    'imports/ui/shared/logger.js',
 ];
 
 
@@ -84,11 +82,18 @@ const rl = readline.createInterface({
 
 rl.question("Fullstack App Name: ", (name) => {
   name = name.toLowerCase().replace(" ","-");
-  console.log("Creating Fullstack App: "+name);
-  fs.mkdirSync(name);
+  var is_new_app = !fs.existsSync(name);
+  var action = is_new_app?"Creat":"Updat";
+  console.log(action+"ing Fullstack App: "+name);
+  if(is_new_app){
+    fs.mkdirSync(name, {recursive: true});
+    files.push('source/ui/pages/home/template.html');
+    files.push('source/ui/pages/home/script.js');
+    files.push('source/ui/pages/home/style.css');
+  }
   fetchAndSaveFiles(baseUrl, files, name)
   .then(()=>{
-    console.log('Created Fullstack App: '+name);
+    console.log(action+'ed Fullstack App: '+name);
     process.chdir(name);
     execSync(
       "npm run fetch",
