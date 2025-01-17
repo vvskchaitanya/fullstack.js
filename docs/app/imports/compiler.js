@@ -52,7 +52,7 @@ bundle=function(){
         [template,script,style,data].forEach(f=>{
             fs.existsSync(f)?files.push(f):"";
         });
-        bundle.pages.push(p);
+        bundle_output.pages.push(p);
     });
     /** Watch source file changes and recompile into bundle.json */
     if(watch.length==0 && files.length!=0){
