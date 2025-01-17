@@ -2,8 +2,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require('path');
 
-const TARGET = "target";
-const UI = "ui";
+const TARGET_UI = "target/ui";
 
 
 serve=function(){
@@ -15,7 +14,7 @@ serve=function(){
         }else if(url.indexOf("/api/")==0){
           serve_api(url,req,res);
         }else if(url=="" || url=="/" || url=="/index.html"){
-          var indexHtml = fs.existsSync(TARGET+"/index.html")?fs.readFileSync(TARGET+"/index.html"):"";
+          var indexHtml = fs.existsSync(TARGET_UI+"/index.html")?fs.readFileSync(TARGET_UI+"/index.html"):"";
           res.writeHead(200, { 'Content-Type': 'text/html' });
           res.write(indexHtml);
           res.end();
@@ -28,7 +27,7 @@ serve=function(){
 }
 
 serve_ui=function(url,res){
-  const filePath = path.join(TARGET+"/"+UI, url.replace('/ui/', ''));
+  const filePath = path.join(TARGET_UI, url.replace('/ui/', ''));
 
     // Get the file extension
     const ext = path.extname(filePath).toLowerCase();
