@@ -1,7 +1,7 @@
 const fs = require("fs");
 const options = { encoding: "UTF-8" };
 
-const UI_PAGES = "ui/pages";
+const UI_PAGES = "source/ui/pages";
 
 var watch = [];
 
