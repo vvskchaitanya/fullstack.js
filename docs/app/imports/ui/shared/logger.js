@@ -30,7 +30,10 @@
     loggerElement.style.zIndex = '10000';
 
     loggerElement.readOnly = true;
-    document.body.appendChild(loggerElement);
+    let log = sessionStorage.getItem("logger");
+    if(log!=null && log=="true"){
+      document.body.appendChild(loggerElement);
+    }
   }
 
   /**

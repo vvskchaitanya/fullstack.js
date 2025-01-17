@@ -46,6 +46,7 @@ function goto(path) {
 }
 
 Loader.init();
+Logger.init();
 
 // Example usage after pages are loaded
 setTimeout(() => {
