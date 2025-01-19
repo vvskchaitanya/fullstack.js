@@ -9,8 +9,6 @@ const timestamp = function(){
     return new Date().toUTCString();
 }
 
-
-
 start = function(){
     compiler.compile();
     server.serve();

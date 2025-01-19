@@ -1,5 +1,6 @@
 // Fetch the bundle.json and initialize the pages array
 let pages = [];
+let components = [];
 
 fetch('ui/bundle.json')
     .then(response => {
@@ -10,7 +11,9 @@ fetch('ui/bundle.json')
     })
     .then(data => {
         pages = data.pages;
+        components = data.components;
         console.log('Pages loaded:', pages);
+        console.log('Components loaded:', components);
     })
     .catch(error => {
         console.error('Failed to fetch bundle.json:', error);
@@ -18,13 +21,22 @@ fetch('ui/bundle.json')
 
 // Function to load a page based on the path
 function goto(path) {
-    const page = pages.find(p => p.name === path);
+    console.log("Goto: "+path)
+    const page = pages.find(p => p.path === path);
     var app = document.getElementById('app');
     if (!page) {
         app.innerHTML = '<h1>Page Not Found</h1>';
         return;
     }
     else {
+        const p = document.createElement("div");
+        p.id = page.name;
+        for(var comp in page.components){
+            var component = components.find(c=>c.name==comp);
+            if(component!=undefined){
+                
+            }
+        }
         app.innerHTML = page.template;
         // Dynamically load the script
         if (page.script) {
@@ -48,7 +60,4 @@ function goto(path) {
 Loader.init();
 Logger.init();
 
-// Example usage after pages are loaded
-setTimeout(() => {
-    goto('home');
-}, 1000);
+goto(window.location.pathname.substring(1));
