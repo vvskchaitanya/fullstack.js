@@ -1,0 +1,11 @@
+#navigator span.link{
+    text-decoration: underline;
+    font-size: 25px;
+    color:blue;
+    margin: 10px 20px;
+    cursor: pointer;
+}
+
+#navigator span.link:hover{
+    color:blueviolet;
+}

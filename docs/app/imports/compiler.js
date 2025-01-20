@@ -58,14 +58,15 @@ bundle=function(){
     if(!fs.existsSync(UI_PAGES)){
         console.log("Compiler: No Directory \""+UI_PAGES+"\"");
     }else{
-        var pages = fs.readFileSync(UI_PAGES);
+        var pages = fs.readdirSync(UI_PAGES);
         var files = [];
         pages.forEach(page =>{
             console.log("Compiler: Adding Page: "+page);
             var pf = UI_PAGES +"/"+page;
             var p = fs.existsSync(pf)?fs.readFileSync(pf, options):"";
-            if(pf!=""){
-                files.push(pf)
+            if(p!=""){
+                files.push(pf);
+                p=JSON.parse(p);
                 bundle_output.pages.push(p);    
             }
         });
