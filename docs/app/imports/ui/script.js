@@ -33,27 +33,29 @@ function goto(path) {
     else {
         const p = document.createElement("div");
         p.id = page.name;
-        var html = "";
-        for(var comp in page.components){
-            var c = document.createElement("div");
-            c.id = comp.name;
+        if(page.title!=undefined){
+            document.title = page.title;
+        }
+        for(var comp of page.components){
+            var c = document.createElement("div");            
             var component = components.find(c=>c.name==comp);
             if(component!=undefined){
+                c.id = component.name;
                 if(component.template!=undefined){
                     c.innerHTML = component.template;
                 }
                 // Dynamically load the script
                 if(component.script!=undefined){
                     var script = document.createElement('script');
-                    script.innerHTML = page.script;
+                    script.innerHTML = component.script;
                     script.type = 'text/javascript';
                     c.appendChild(script);
                 }
                 // Dynamically load the style
-                if (page.style) {
+                if (component.style) {
                     var style = document.createElement('link');
                     style.rel = 'stylesheet';
-                    style.innerHTML = page.style;
+                    style.innerHTML = component.style;
                     c.appendChild(style);
                 }
                 

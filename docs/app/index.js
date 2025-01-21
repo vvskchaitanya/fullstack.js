@@ -1,3 +1,5 @@
 const app = require("./imports/fullstack");
 
-app.start();
+const args = process.argv.slice(2); 
+
+args.includes('--build')? app.build() : app.start();

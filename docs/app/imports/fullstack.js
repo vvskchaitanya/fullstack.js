@@ -1,5 +1,6 @@
 var compiler = require('./compiler');
 var server = require('./server');
+var builder = require('./builder');
 
 // global variables
 const algorithm = "aes256";
@@ -16,4 +17,9 @@ start = function(){
     console.log("App Server Stared.");
 }
 
-module.exports = { start };
+build = function(){
+    builder.build();
+    console.log("Build Successfull")
+}
+
+module.exports = { start, build };
