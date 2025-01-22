@@ -33,7 +33,9 @@ function goto(path) {
     else {
         const p = document.createElement("div");
         p.id = page.name;
-        var html = "";
+        if(page.title!=undefined){
+            document.title = page.title;
+        }
         for(var comp of page.components){
             var c = document.createElement("div");            
             var component = components.find(c=>c.name==comp);

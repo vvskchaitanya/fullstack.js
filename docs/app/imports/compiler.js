@@ -42,9 +42,9 @@ bundle=function(){
             var c = {};
             c.name = component;
             console.log("Compiler: Adding Component: "+component);
-            var template = UI_PAGES +"/"+ component + "/"+component+".html";
-            var script = UI_PAGES +"/"+ component + "/"+component+".js";
-            var style = UI_PAGES +"/"+ component + "/"+component+".css";
+            var template = UI_COMPONENTS +"/"+ component + "/"+component+".html";
+            var script = UI_COMPONENTS +"/"+ component + "/"+component+".js";
+            var style = UI_COMPONENTS +"/"+ component + "/"+component+".css";
             c.template = fs.existsSync(template)?fs.readFileSync(template, options):"";
             c.script = fs.existsSync(script)?fs.readFileSync(script, options):"";
             c.style = fs.existsSync(style)?fs.readFileSync(style, options):"";
@@ -82,7 +82,6 @@ bundle=function(){
 
 watcher=function(){
     watch.forEach(path=>{
-        console.log(path);
         fs.watch(path, (event,file)=>{
             bundle();
         });

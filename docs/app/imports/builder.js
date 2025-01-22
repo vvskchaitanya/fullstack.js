@@ -30,8 +30,8 @@ build = function(){
 
     /** Copy included folders from target to output */
     include_folders.forEach(f=>{
-        copyRecursive(TARGET_UI+f,OUTPUT+f)
-    })
+        copyRecursive(TARGET_UI+f,OUTPUT+f);
+    });
 }
 
 module.exports = { build };
