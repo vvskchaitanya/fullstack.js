@@ -4,6 +4,6 @@
     "title":"Home",
     "components":[
         "header",
-        "navigator"
+        "home"
     ]
 }

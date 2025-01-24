@@ -66,12 +66,19 @@ var files = [
     'imports/file-util.js',
     'imports/server.js',
     'imports/compiler.js',
+    'imports/builder.js',
     'imports/fullstack.js',
     'imports/ui/index.html',
     'imports/ui/script.js',
     'imports/ui/style.css',
     'imports/ui/shared/loader.js',
     'imports/ui/shared/logger.js',
+    'imports/ui/shared/vvsk-icon.png',
+    'source/ui/components/header.html',
+    'source/ui/components/header.css',
+    'source/ui/components/home.html',
+    'source/ui/components/home.css',
+    'source/ui/pages/home.json',
 ];
 
 
