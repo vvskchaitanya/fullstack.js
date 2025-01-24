@@ -68,18 +68,21 @@ var files = [
     'imports/compiler.js',
     'imports/builder.js',
     'imports/fullstack.js',
+    'imports/ui/shared/loader.js',
+    'imports/ui/shared/logger.js'
+];
+
+var new_f=[
     'imports/ui/index.html',
     'imports/ui/script.js',
     'imports/ui/style.css',
-    'imports/ui/shared/loader.js',
-    'imports/ui/shared/logger.js',
-    'imports/ui/shared/vvsk-icon.png',
+    'imports/ui/shared/icon.png',
     'source/ui/components/header.html',
     'source/ui/components/header.css',
     'source/ui/components/home.html',
     'source/ui/components/home.css',
     'source/ui/pages/home.json',
-];
+]
 
 
 const rl = readline.createInterface({
@@ -94,9 +97,7 @@ rl.question("Fullstack App Name: ", (name) => {
   console.log(action+"ing Fullstack App: "+name);
   if(is_new_app){
     fs.mkdirSync(name, {recursive: true});
-    files.push('source/ui/pages/home/template.html');
-    files.push('source/ui/pages/home/script.js');
-    files.push('source/ui/pages/home/style.css');
+    files.addAll(new_f);
   }
   fetchAndSaveFiles(baseUrl, files, name)
   .then(()=>{
