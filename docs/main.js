@@ -97,7 +97,7 @@ rl.question("Fullstack App Name: ", (name) => {
   console.log(action+"ing Fullstack App: "+name);
   if(is_new_app){
     fs.mkdirSync(name, {recursive: true});
-    files.addAll(new_f);
+    files.concat(new_f);
   }
   fetchAndSaveFiles(baseUrl, files, name)
   .then(()=>{
