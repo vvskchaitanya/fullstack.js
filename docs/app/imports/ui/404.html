@@ -1,0 +1,6 @@
+<script>
+    var url = new URL(window.location.href);
+    var redirect = url.pathname+url.search;
+    sessionStorage.setItem("redirect",redirect.substring(1));
+    window.location.href = "/";
+</script>

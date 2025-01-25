@@ -76,6 +76,7 @@ var new_f=[
     'imports/ui/index.html',
     'imports/ui/script.js',
     'imports/ui/style.css',
+    'imports/ui/404.html',
     'imports/ui/shared/icon.png',
     'source/ui/components/header/header.html',
     'source/ui/components/header/header.css',
@@ -111,7 +112,9 @@ rl.question("Fullstack App Name: ", (name) => {
   fetchAndSaveFiles(baseUrl, files, name)
   .then(()=>{
     console.log(action+'ed Fullstack App: '+name);
-    process.chdir(name);
+    if(name!=""){
+        process.chdir(name);
+    }
     execSync(
       "npm run fetch",
       {stdio: 'inherit'}
