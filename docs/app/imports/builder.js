@@ -8,6 +8,7 @@ var include_files = [
     "index.html",
     "script.js",
     "style.css",
+    "404.html",
     "bundle.json"
 ];
 
