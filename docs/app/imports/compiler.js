@@ -54,12 +54,11 @@ bundle=function(){
             bundle_output.components.push(c);
         });
     }
-
+    var files = [];
     if(!fs.existsSync(UI_PAGES)){
         console.log("Compiler: No Directory \""+UI_PAGES+"\"");
     }else{
         var pages = fs.readdirSync(UI_PAGES);
-        var files = [];
         pages.forEach(page =>{
             console.log("Compiler: Adding Page: "+page);
             var pf = UI_PAGES +"/"+page;
@@ -73,7 +72,7 @@ bundle=function(){
     }
     
     /** Watch source file changes and recompile into bundle.json */
-    if(watch.length==0 && files.length!=0){
+    if(watch.length==0 && files!=null && files.length!=0){
         watch = files;
         watcher();
     }
