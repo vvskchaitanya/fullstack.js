@@ -77,10 +77,10 @@ var new_f=[
     'imports/ui/script.js',
     'imports/ui/style.css',
     'imports/ui/shared/icon.png',
-    'source/ui/components/header.html',
-    'source/ui/components/header.css',
-    'source/ui/components/home.html',
-    'source/ui/components/home.css',
+    'source/ui/components/header/header.html',
+    'source/ui/components/header/header.css',
+    'source/ui/components/home/home.html',
+    'source/ui/components/home/home.css',
     'source/ui/pages/home.json',
 ]
 
@@ -92,7 +92,13 @@ const rl = readline.createInterface({
 
 rl.question("Fullstack App Name: ", (name) => {
   name = name.toLowerCase().replace(" ","-");
-  var is_new_app = !fs.existsSync(name);
+  // Get the current directory name
+  const currentDirName = path.basename(process.cwd());
+    if (name == currentDirName) {
+        // Create /Update app in same directory
+        name = "";
+    }
+  var is_new_app = !fs.existsSync(name+"package.json");
   var action = is_new_app?"Creat":"Updat";
   console.log(action+"ing Fullstack App: "+name);
   if(is_new_app){
