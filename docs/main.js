@@ -98,11 +98,14 @@ rl.question("Fullstack App Name: ", (name) => {
         // Create /Update app in same directory
         name = "";
     }
-  var is_new_app = !fs.existsSync(name+"package.json");
+  var is_new_app = !fs.existsSync(name+"/package.json");
   var action = is_new_app?"Creat":"Updat";
   console.log(action+"ing Fullstack App: "+name);
   if(is_new_app){
-    fs.mkdirSync(name, {recursive: true});
+    if(name!=""){
+        console.log("Creating folder: "+name);
+        fs.mkdirSync(name, {recursive: true});
+    }
     files = files.concat(new_f);
   }
   fetchAndSaveFiles(baseUrl, files, name)
