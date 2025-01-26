@@ -47,21 +47,23 @@ build = function(){
  * @returns {string[]} - The files array from the build.json file.
  */
 function getFilesFromBuildJsonSync(filePath) {
-    try {
-        // Read the file synchronously
-        const data = fs.readFileSync(filePath, 'utf8');
-        // Parse the JSON data
-        const buildJson = JSON.parse(data);
-
-        // Extract the files array
-        if (!Array.isArray(buildJson.files)) {
-            throw new Error("'files' property is missing or not an array in build.json");
+    if(fs.existsSync("build.json")){
+        try {
+            // Read the file synchronously
+            const data = fs.readFileSync(filePath, 'utf8');
+            // Parse the JSON data
+            const buildJson = JSON.parse(data);
+    
+            // Extract the files array
+            if (!Array.isArray(buildJson.files)) {
+                throw new Error("'files' property is missing or not an array in build.json");
+            }
+    
+            return buildJson.files;
+        } catch (error) {
+            console.error(`Error reading or parsing build.json: ${error.message}`);
+            return [];
         }
-
-        return buildJson.files;
-    } catch (error) {
-        console.error(`Error reading or parsing build.json: ${error.message}`);
-        return [];
     }
 }
 

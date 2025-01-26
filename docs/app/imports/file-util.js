@@ -8,7 +8,7 @@ const path = require('path');
  */
 function copyRecursive(src, dest) {
   if (!fs.existsSync(src)) {
-    console.error(`Source folder "${src}" does not exist.`);
+    console.warn(`Source folder "${src}" does not exist.`);
     return;
   }
 
