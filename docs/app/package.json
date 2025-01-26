@@ -12,6 +12,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "@vvsk/fullstack": "^1.0.4"
+      "@vvsk/fullstack": "^1.0.5"
     }
   }

@@ -18,8 +18,28 @@ start = function(){
 }
 
 build = function(){
+    compiler.compile();
     builder.build();
+    compiler.clean();
     console.log("Build Successfull")
 }
+
+// Handle server shutdown
+function handleShutdown() {
+    console.log("App Server Stopped.")
+    compiler.clean();
+    process.exit(0);
+}
+
+// Listen for termination signals
+process.on('SIGINT', handleShutdown); // Ctrl+C
+process.on('SIGTERM', handleShutdown); // Termination signal
+
+// Optional: Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  handleShutdown();
+});
+
 
 module.exports = { start, build };

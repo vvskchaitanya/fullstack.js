@@ -14,16 +14,18 @@ const TARGET = "target/";
 var watch = [];
 
 compile = function(){
-    /** Create TARGET */
-    if (!fs.existsSync(TARGET)) {
-        fs.mkdirSync(TARGET+UI, { recursive: true });
-    }
+
+    /** Delete TARGET */
+    clean();
+
+    /* Create Target */
+    fs.mkdirSync(TARGET+UI, { recursive: true });
 
     /** Copy complete imports/ui into target/ */
     copyRecursive(IMPORTS+UI,TARGET+UI);
 
     /** Copy complete source/resources into target */
-    copyRecursive(SOURCE+RESOURCES,TARGET+UI);
+    copyRecursive(SOURCE+UI+RESOURCES,TARGET+UI);
 
     /** Convert source/pages into target/bundle.json */
     bundle();
@@ -86,5 +88,11 @@ watcher=function(){
         });
     });
 }
+
+clean = function(){
+    if (fs.existsSync(TARGET)) {
+        fs.rmSync(TARGET,{recursive: true});
+    }
+}
   
-module.exports = { compile };
+module.exports = { compile, clean };
