@@ -26,7 +26,7 @@ build = function(){
 
 // Handle server shutdown
 function handleShutdown() {
-    console.log("App Server Stopped.")
+    console.log("\nApp Server Stopped.")
     compiler.clean();
     process.exit(0);
 }
