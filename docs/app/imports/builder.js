@@ -62,9 +62,9 @@ function getFilesFromBuildJsonSync(filePath) {
             return buildJson.files;
         } catch (error) {
             console.error(`Error reading or parsing build.json: ${error.message}`);
-            return [];
         }
     }
+    return [];
 }
 
 module.exports = { build };
