@@ -70,7 +70,8 @@ var files = [
     'imports/builder.js',
     'imports/fullstack.js',
     'imports/ui/shared/loader.js',
-    'imports/ui/shared/logger.js'
+    'imports/ui/shared/logger.js',
+    'imports/ui/shared/firebase.js'
 ];
 
 var new_f=[
@@ -78,6 +79,7 @@ var new_f=[
     'imports/ui/script.js',
     'imports/ui/style.css',
     'imports/ui/404.html',
+    'imports/ui/fireabse-config.json',
     'imports/ui/shared/icon.png',
     'source/ui/components/header/header.html',
     'source/ui/components/header/header.css',
