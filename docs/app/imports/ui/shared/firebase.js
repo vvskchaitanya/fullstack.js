@@ -1,3 +1,9 @@
+// Import Firebase modules from Google CDN
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+var db;
+
 (function (global) {
 
     /**
@@ -5,10 +11,11 @@
      */
     async function init() {
         try{
-            const config = await (await fetch("firebase-config.json")).json();
+            const config = await (await fetch("ui/firebase-config.json")).json();
             // Initialize Firebase
+            console.log('Loading Firebase: ',config);
             this.app = initializeApp(config);
-            this.db = getFirestore(app);
+            db = getFirestore(app);
         }catch(err){
             console.error(err);
         }
