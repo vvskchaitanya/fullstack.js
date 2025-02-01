@@ -79,7 +79,7 @@ var new_f=[
     'imports/ui/script.js',
     'imports/ui/style.css',
     'imports/ui/404.html',
-    'imports/ui/fireabse-config.json',
+    'imports/ui/firebase-config.json',
     'imports/ui/shared/icon.png',
     'source/ui/components/header/header.html',
     'source/ui/components/header/header.css',
