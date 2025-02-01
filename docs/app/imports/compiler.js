@@ -21,8 +21,11 @@ compile = function(){
     /* Create Target */
     fs.mkdirSync(TARGET+UI, { recursive: true });
 
-    /** Copy complete imports/ui into target/ */
+    /** Copy complete imports/ui into target/ui */
     copyRecursive(IMPORTS+UI,TARGET+UI);
+
+    /** Copy complete source/ui into target/ui */
+    copyRecursive(SOURCE+UI,TARGET+UI);
 
     /** Convert source/pages into target/bundle.json */
     bundle();
