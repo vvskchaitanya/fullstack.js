@@ -2,8 +2,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-var db;
-
 (function (global) {
 
     /**
@@ -15,7 +13,8 @@ var db;
             // Initialize Firebase
             console.log('Loading Firebase: ',config);
             this.app = initializeApp(config);
-            db = getFirestore(app);
+            this.db = getFirestore(this.app);
+            console.log("Loaded Database: ",this.db);
         }catch(err){
             console.error(err);
         }
@@ -30,11 +29,11 @@ var db;
     */
     async function read(collectionName, docId = null) {
         if (docId) {
-            const docRef = doc(db, collectionName, docId);
+            const docRef = doc(this.db, collectionName, docId);
             const docSnap = await getDoc(docRef);
             return docSnap.exists() ? docSnap.data() : null;
         } else {
-            const querySnapshot = await getDocs(collection(db, collectionName));
+            const querySnapshot = await getDocs(collection(this.db, collectionName));
             return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
     }
@@ -47,7 +46,7 @@ var db;
      * @returns {Promise<void>}
      */
     async function write(collectionName, docId, data) {
-        const docRef = doc(db, collectionName, docId);
+        const docRef = doc(this.db, collectionName, docId);
         await setDoc(docRef, data, { merge: true });
     }
 
@@ -57,4 +56,5 @@ var db;
         read,
         write,
     };
+
 })(window);
