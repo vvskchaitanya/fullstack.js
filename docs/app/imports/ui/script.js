@@ -68,6 +68,7 @@ function goto(path) {
 
 Loader.init();
 Logger.init();
+Firebase.init();
 
 load=function(){
     goto(window.location.pathname.substring(1));
