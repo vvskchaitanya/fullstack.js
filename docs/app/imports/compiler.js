@@ -24,9 +24,6 @@ compile = function(){
     /** Copy complete imports/ui into target/ */
     copyRecursive(IMPORTS+UI,TARGET+UI);
 
-    /** Copy complete source/resources into target */
-    copyRecursive(SOURCE+UI+RESOURCES,TARGET+UI);
-
     /** Convert source/pages into target/bundle.json */
     bundle();
 }

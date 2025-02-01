@@ -1,8 +1,6 @@
 const fs = require("fs");
 const { copyRecursive } = require('./file-util');
 
-
-const SOURCE_UI_RESOURCES = "source/ui/resources";
 const TARGET_UI = "target/ui/";
 const OUTPUT = "docs/"
 
@@ -11,11 +9,14 @@ var include_files = [
     "script.js",
     "style.css",
     "404.html",
-    "bundle.json"
+    "bundle.json",
+    "CNAME",
+    "firebase-config.json"
 ];
 
 var include_folders = [
-    "shared"
+    "shared",
+    "resources"
 ]
 
 build = function(){
@@ -27,16 +28,17 @@ build = function(){
 
     /** Copy included files from target to output folder */
     include_files.forEach(f=>{
-        fs.copyFileSync(TARGET_UI+f,OUTPUT+f);
+        try{
+            fs.copyFileSync(TARGET_UI+f,OUTPUT+f);
+        }catch(err){
+            console.warn("File not found: "+f);
+        }
     });
 
     /** Copy included folders from target to output */
     include_folders.forEach(f=>{
         copyRecursive(TARGET_UI+f,OUTPUT+f);
     });
-
-    /** Copy the source resources to output */
-    copyRecursive(SOURCE_UI_RESOURCES,OUTPUT);
 }
 
 
