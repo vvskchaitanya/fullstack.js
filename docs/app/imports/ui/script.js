@@ -53,8 +53,7 @@ function goto(path) {
                 }
                 // Dynamically load the style
                 if (component.style) {
-                    var style = document.createElement('link');
-                    style.rel = 'stylesheet';
+                    var style = document.createElement('style');
                     style.innerHTML = component.style;
                     c.appendChild(style);
                 }
@@ -73,5 +72,3 @@ Firebase.init();
 load=function(){
     goto(window.location.pathname.substring(1));
 }
-
-
