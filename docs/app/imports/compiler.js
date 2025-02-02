@@ -35,11 +35,11 @@ bundle=function(){
     var bundle_output = { pages:[],components:[]};
     var UI_COMPONENTS = SOURCE+UI+COMPONENTS;
     var UI_PAGES = SOURCE+UI+PAGES;
+    var files = [];
     if(!fs.existsSync(UI_COMPONENTS)){
         console.log("Compiler: No Directory \""+UI_COMPONENTS+"\"");
     }else{
         var components = fs.readdirSync(UI_COMPONENTS);
-        var files = [];
         components.forEach(component =>{
             var c = {};
             c.name = component;
@@ -56,7 +56,6 @@ bundle=function(){
             bundle_output.components.push(c);
         });
     }
-    var files = [];
     if(!fs.existsSync(UI_PAGES)){
         console.log("Compiler: No Directory \""+UI_PAGES+"\"");
     }else{
