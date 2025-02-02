@@ -14,7 +14,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@vvsk/fullstack": "^1.0.5",
         "electron": "^34.0.2",
         "electron-builder": "^25.1.8"
     }
