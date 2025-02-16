@@ -1,86 +1,80 @@
 const http = require("http");
 const fs = require("fs");
 const path = require('path');
+const { error } = require("console");
 
 const TARGET_UI = "target/ui";
 
+const TARGET_API = "target/ui";
+
+const MIME_TYPES = {
+  '.html': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.json': 'application/json',
+  '.txt': 'text/plain',
+};
+
 
 serve=function(){
-    const server = http.createServer((req, res) => {
-        let url = req.url;
-        console.log("Request URL: "+req.url);
-        if(url.indexOf("/ui/")==0){
-          serve_ui(req.url,res);
-        }else if(url.indexOf("/api/")==0){
-          serve_api(url,req,res);
-        }else if(url=="" || url=="/" || url=="/index.html"){
-          var indexHtml = fs.existsSync(TARGET_UI+"/index.html")?fs.readFileSync(TARGET_UI+"/index.html"):"";
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.write(indexHtml);
-          res.end();
-        }else{
-          res.writeHead(404);
-          res.end();
-        }  
-    });
-    server.listen(9999); 
+  serve_ui(9999,TARGET_UI,"ui");
+  serve_api(8888,TARGET_API,"api");
 }
 
-serve_ui=function(url,res){
-  const filePath = path.join(TARGET_UI, url.replace('/ui/', ''));
 
-    // Get the file extension
-    const ext = path.extname(filePath).toLowerCase();
 
-    // Set the appropriate MIME type
-    const mimeTypes = {
-      '.html': 'text/html',
-      '.css': 'text/css',
-      '.js': 'application/javascript',
-      '.png': 'image/png',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.gif': 'image/gif',
-      '.svg': 'image/svg+xml',
-      '.json': 'application/json',
-      '.txt': 'text/plain',
-    };
-
-    const mimeType = mimeTypes[ext] || 'application/octet-stream';
-
-    // Check if the file exists
-    fs.access(filePath, fs.constants.F_OK, (err) => {
+function serve_ui(port, target_dir, base_context){
+  if(port==null){
+    throw new error("Port is not specified");
+  }
+  if(target_dir==null && target_dir!=""){
+    throw new error("Target dir not specified");
+  }
+  const server= http.createServer((req,res)=>{
+    let url = req.url;
+    console.log("Request URL: "+req.url);
+    if(base_context!=null && base_context!=""){
+      if(base_context[0]!="/")base_context="/"+base_context;
+      if(base_context[base_context.lenth-1]!="/") base_context+="/";
+      url = url.replace(base_context,"");
+    }
+    const filePath = path.join(target_dir, url);
+    fs.stat(filePath, (err, stats) => {
       if (err) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
-        return;
+          res_writeFolder("ui",res);
       }
-
-      // Read and serve the file
-      fs.readFile(filePath, (err, data) => {
-        if (err) {
-          res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('500 Internal Server Error');
-          return;
-        }
-
-        res.writeHead(200, { 'Content-Type': mimeType });
-        res.end(data);
-      });
+      if (stats.isDirectory()) {
+          res_writeFolder(filePath,res);
+      } else if (stats.isFile()) {
+          res_writeFile(filePath,res);
+      }
     });
+  });
+  try{
+    server.listen(port);
+  }catch(err){
+    console.error("Unable to serve on "+PORT+". Port already in use.")
+  }
+  
 }
 
-function serve_api(url, req, res) {
+function serve_api(port, target_dir, base_context){
+  const server = http.createServer((req, res) => {
     try {
         // Parse the context path from the URL
         const contextPath = new URL(url, `http://${req.headers.host}`).pathname;
 
         // Remove '/api/' from the context path
-        const cleanedPath = contextPath.replace(/^\/api\//, '');
+        const cleanedPath = contextPath.replace("/^\/"+base_context+"\//", '');
 
         // Resolve the file path
         const fileName = path.basename(cleanedPath) + '.js';
-        const filePath = path.join(__dirname, 'source/api', fileName);
+        const filePath = path.join(__dirname, target_dir , fileName);
 
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
@@ -101,6 +95,42 @@ function serve_api(url, req, res) {
         res.statusCode = 500;
         res.end(`Error processing API request: ${error.message}`);
     }
+  });
+  try{
+    server.listen(port);
+  }catch(err){
+    console.error("Unable to serve on "+port+". Port already in use.")
+  }
+}
+
+res_writeFolder = function(folder,res){
+  if(folder[folder.length-1]!="/")folder+="/"
+  fs.readFile(folder+"index.html", (err, data) => {
+    if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end('500 Internal Server Error');
+    }
+    res.writeHead(200, { 'Content-Type': "text/html" });
+    res.end(data);
+  });
+}
+
+res_writeFile=function(file,res){
+  fs.readFile(file, (err, data) => {
+    if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end('500 Internal Server Error');
+    }
+    res.writeHead(200, { 'Content-Type': getContentType(file) });
+    res.end(data);
+  });
+}
+
+getContentType = function(file){
+  // Get the file extension
+  let type = path.extname(filePath).toLowerCase();
+
+  return MIME_TYPES[type] || 'application/octet-stream';
 }
 
 module.exports = { serve };
