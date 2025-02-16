@@ -67,6 +67,11 @@ function serve_ui(port, target_dir, base_context){
 
 function serve_api(port, target_dir, base_context){
   const server = http.createServer((req, res) => {
+    // Enable CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      enableCORS(res,"200");
+      return res.end();;
+    }
     try {
       let url = req.url;
         console.log("API: Request URL: "+req.url);
@@ -79,6 +84,7 @@ function serve_api(port, target_dir, base_context){
         // Resolve the file path
         const fileName = path.basename(cleanedPath) + '.js';
         const filePath = path.join(__dirname, target_dir , fileName);
+        console.log(filePath);
 
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
@@ -86,7 +92,6 @@ function serve_api(port, target_dir, base_context){
             res.end(`API ${url} not found.`);
             return;
         }
-
         // Require the file and execute the exported function
         const apiHandler = require(filePath);
         if (typeof apiHandler === 'function') {
@@ -96,6 +101,7 @@ function serve_api(port, target_dir, base_context){
             res.end(`API file ${fileName} does not export a valid function.`);
         }
     } catch (error) {
+        console.error(error);
         res.statusCode = 500;
         res.end(`Error processing API request: ${error.message}`);
     }
@@ -141,6 +147,14 @@ getContentType = function(filePath){
   let type = path.extname(filePath).toLowerCase();
 
   return MIME_TYPES[type] || 'application/octet-stream';
+}
+
+enableCORS = function(res,statusCode){
+  // Enable CORS preflight for OPTIONS requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
 }
 
 module.exports = { serve };

@@ -1,6 +1,9 @@
+const API_ENDPOINT = window.location.origin.replace("9999","8888")+"/";
+
+let selectedComponent = null;
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Variables for Components tab
-    let selectedComponent = null;
+    
     const saveButton = document.getElementById("save-button");
     const componentSearch = document.getElementById("component-search");
     const addComponentBtn = document.getElementById("add-component-btn");
@@ -52,14 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Save component changes
     saveButton.addEventListener("click", () => {
-      if (!selectedComponent) return alert("No component selected!");
+      if (selectedComponent==null) return alert("No component selected!");
       const updatedComponent = {
         name: selectedComponent.name,
         template: document.getElementById("template-content").value,
         script: document.getElementById("script-content").value,
         style: document.getElementById("style-content").value
       };
-      fetch("../api/save-component", {
+      fetch(API_ENDPOINT+"save-component", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedComponent)
@@ -210,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!currentPage) return;
       currentPage.name = document.getElementById("page-name").value;
       currentPage.path = document.getElementById("page-path").value;
-      fetch("../api/save-page", {
+      fetch(API_ENDPOINT+"save-page", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(currentPage)
@@ -231,6 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     items.forEach(item => {
       const li = document.createElement("li");
       li.className = "list-group-item";
+      li.style = "cursor:pointer";
       li.textContent = item.name || item;
       li.addEventListener("click", () => clickHandler(item));
       listElement.appendChild(li);
