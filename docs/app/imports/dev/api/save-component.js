@@ -20,7 +20,8 @@ module.exports = (req, res) => {
       }
       
       // Build target folder: source/ui/components/<ComponentName>
-      const componentFolder = path.join(__dirname, 'source', 'ui', 'components', name);
+      const componentFolder = path.join(__dirname, '../','../','source', 'ui', 'components', name);
+      console.log("Creating Component: "+componentFolder);
       fs.mkdir(componentFolder, { recursive: true }, err => {
         if (err) {
           console.error('Error creating folder:', err);
@@ -28,21 +29,21 @@ module.exports = (req, res) => {
         }
         
         // Write component.html
-        fs.writeFile(path.join(componentFolder, 'component.html'), template || '', err1 => {
+        fs.writeFile(path.join(componentFolder, name+'.html'), template || '', err1 => {
           if (err1) {
             console.error('Error writing component.html:', err1);
             return sendResponse(res, 500, { success: false, message: 'Error writing component.html.', error: err1 });
           }
           
           // Write style.css
-          fs.writeFile(path.join(componentFolder, 'style.css'), style || '', err2 => {
+          fs.writeFile(path.join(componentFolder, name+'.css'), style || '', err2 => {
             if (err2) {
               console.error('Error writing style.css:', err2);
               return sendResponse(res, 500, { success: false, message: 'Error writing style.css.', error: err2 });
             }
             
             // Write script.js
-            fs.writeFile(path.join(componentFolder, 'script.js'), script || '', err3 => {
+            fs.writeFile(path.join(componentFolder, name+'.js'), script || '', err3 => {
               if (err3) {
                 console.error('Error writing script.js:', err3);
                 return sendResponse(res, 500, { success: false, message: 'Error writing script.js.', error: err3 });

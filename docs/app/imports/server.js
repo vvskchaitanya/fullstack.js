@@ -84,7 +84,7 @@ function serve_api(port, target_dir, base_context){
         // Resolve the file path
         const fileName = path.basename(cleanedPath) + '.js';
         const filePath = path.join(__dirname, target_dir , fileName);
-        console.log(filePath);
+        console.log("API: Executing File: "+filePath);
 
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
