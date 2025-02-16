@@ -21,7 +21,7 @@ module.exports = (req, res) => {
       
       // Build target folder: source/ui/components/<ComponentName>
       const componentFolder = path.join(__dirname, '../','../','source', 'ui', 'components', name);
-      console.log("Creating Component: "+componentFolder);
+      console.log("Saving Component: "+componentFolder);
       fs.mkdir(componentFolder, { recursive: true }, err => {
         if (err) {
           console.error('Error creating folder:', err);

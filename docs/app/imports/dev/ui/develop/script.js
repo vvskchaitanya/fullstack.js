@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         script: "",
         style: ""
       };
-      fetch("../api/create-component", {
+      fetch(API_ENDPOINT+"save-component", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newComponent)
@@ -103,7 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
           alert("New component added successfully!");
           addComponentModal.hide();
-          loadBundle();
+          fetch(API_ENDPOINT+"compile").then(()=>{
+            loadBundle();
+          });
+          
         })
         .catch(error => console.error("Error adding new component:", error));
     });
