@@ -12,6 +12,7 @@ const timestamp = function(){
 
 start = function(){
     compiler.compile();
+    compiler.develop();
     server.serve();
     console.log("Fullstack App Stared.");
 }

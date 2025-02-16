@@ -1,0 +1,57 @@
+
+.tab-pane {
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.list-group {
+    margin-top: 10px;
+}
+
+.list-group-item {
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+/* Left Section Styling */
+.left-section {
+    height: 280px;  /* Reduced height */
+    overflow-y: auto;
+    border: 2px solid #ddd; /* Highlight with a border */
+    padding: 15px;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Soft rounded corners */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Right Section Styling */
+.right-section {
+    border: 2px solid #ddd;
+    padding: 15px;
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Bar Styling */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* Tab Styling */
+.nav-tabs {
+    margin-bottom: 10px;
+}
+
+/* Textareas */
+textarea {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Save Button */
+#save-button, #save-page-button {
+    width: 100%;
+}
+
+

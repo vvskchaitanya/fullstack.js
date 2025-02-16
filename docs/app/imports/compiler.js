@@ -88,10 +88,16 @@ watcher=function(){
     });
 }
 
+develop = function(){
+    if(fs.existsSync("imports/dev/ui/develop")){
+        copyRecursive("imports/dev/ui/develop","target/ui/develop");
+    }
+}
+
 clean = function(){
     if (fs.existsSync(TARGET)) {
         fs.rmSync(TARGET,{recursive: true});
     }
 }
   
-module.exports = { compile, clean };
+module.exports = { compile, develop, clean };
