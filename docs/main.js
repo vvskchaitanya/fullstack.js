@@ -71,7 +71,16 @@ var files = [
     'imports/fullstack.js',
     'imports/ui/shared/loader.js',
     'imports/ui/shared/logger.js',
-    'imports/ui/shared/firebase.js'
+    'imports/ui/shared/firebase.js',
+    'imports/dev/ui/develop/index.html',
+    'imports/dev/ui/develop/script.js',
+    'imports/dev/ui/develop/style.css',
+    'imports/dev/api/compile.js',
+    'imports/dev/api/build.js',
+    'imports/dev/api/delete-component.js',
+    'imports/dev/api/delete-page.js',
+    'imports/dev/api/save-component.js',
+    'imports/dev/api/save-page.js'
 ];
 
 var new_f=[

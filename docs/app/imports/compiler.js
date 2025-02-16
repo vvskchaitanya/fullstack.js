@@ -61,6 +61,7 @@ bundle=function(){
     }else{
         var pages = fs.readdirSync(UI_PAGES);
         pages.forEach(page =>{
+            if(page.indexOf(".json")>-1){
             console.log("Compiler: Adding Page: "+page);
             var pf = UI_PAGES +"/"+page;
             var p = fs.existsSync(pf)?fs.readFileSync(pf, options):"";
@@ -69,6 +70,7 @@ bundle=function(){
                 p=JSON.parse(p);
                 bundle_output.pages.push(p);    
             }
+        }
         });
     }
     
