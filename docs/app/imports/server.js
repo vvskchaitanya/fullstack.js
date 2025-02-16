@@ -57,6 +57,7 @@ function serve_ui(port, target_dir, base_context){
   });
   try{
     server.listen(port);
+    console.log("Serving UI - http://localhost:"+port);
   }catch(err){
     console.error("Unable to serve on "+PORT+". Port already in use.")
   }
@@ -69,7 +70,7 @@ function serve_api(port, target_dir, base_context){
         // Parse the context path from the URL
         const contextPath = new URL(url, `http://${req.headers.host}`).pathname;
 
-        // Remove '/api/' from the context path
+        // Remove base_context from the context path
         const cleanedPath = contextPath.replace("/^\/"+base_context+"\//", '');
 
         // Resolve the file path
@@ -98,6 +99,7 @@ function serve_api(port, target_dir, base_context){
   });
   try{
     server.listen(port);
+    console.log("Serving API - http://localhost:"+port);
   }catch(err){
     console.error("Unable to serve on "+port+". Port already in use.")
   }
