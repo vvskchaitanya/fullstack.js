@@ -1,92 +1,97 @@
 const http = require("http");
 const fs = require("fs");
 const path = require('path');
+const { error } = require("console");
 
+const UI_TARGET = "target/ui";
+const API_TARGET = "../target/api";
+const UI_PORT = 9999;
+const API_PORT = 8888;
+const UI_PATH = "";
+const API_PATH = "";
 
-serve=function(){
-    const server = http.createServer((req, res) => {
-        let url = req.url;
-        console.log("Request URL: "+req.url);
-        if(url.indexOf("/ui/")==0){
-          serve_ui(req.url,res);
-        }else if(url.indexOf("/api/")==0){
-          serve_api(url,req,res);
-        }else if(url=="" || url=="/" || url=="/index.html"){
-          var indexHtml = fs.existsSync("ui/index.html")?fs.readFileSync("ui/index.html"):"";
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.write(indexHtml);
-          res.end();
-        }else{
-          res.writeHead(404);
-          res.end();
-        }  
-    });
-    server.listen(9999); 
+const MIME_TYPES = {
+  '.html': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.json': 'application/json',
+  '.txt': 'text/plain',
+};
+
+serve = function(){
+  return [serve_ui(UI_PORT,UI_TARGET,UI_PATH),serve_api(API_PORT,API_TARGET,API_PATH)];
 }
 
-serve_ui=function(url,res){
-  const filePath = path.join('ui', url.replace('/ui/', ''));
-
-    // Get the file extension
-    const ext = path.extname(filePath).toLowerCase();
-
-    // Set the appropriate MIME type
-    const mimeTypes = {
-      '.html': 'text/html',
-      '.css': 'text/css',
-      '.js': 'application/javascript',
-      '.png': 'image/png',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.gif': 'image/gif',
-      '.svg': 'image/svg+xml',
-      '.json': 'application/json',
-      '.txt': 'text/plain',
-    };
-
-    const mimeType = mimeTypes[ext] || 'application/octet-stream';
-
-    // Check if the file exists
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-      if (err) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
-        return;
+function serve_ui(port, target_dir, base_context){
+  if(port==null){
+    throw new error("Port is not specified");
+  }
+  if(target_dir==null && target_dir!=""){
+    throw new error("Target dir not specified");
+  }
+  const server= http.createServer((req,res)=>{
+    let url = req.url;
+    console.log("UI: Request URL: "+req.url);
+    if(base_context!=null && base_context!=""){
+      if(base_context[0]!="/")base_context="/"+base_context;
+      if(base_context[base_context.lenth-1]!="/") base_context+="/";
+      url = url.replace(base_context,"");
+    }
+    const filePath = path.join(target_dir, url);
+    fs.stat(filePath, (err, stats) => {
+      if (err || stats==null) {
+          res_writeFolder(target_dir,res);
       }
-
-      // Read and serve the file
-      fs.readFile(filePath, (err, data) => {
-        if (err) {
-          res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('500 Internal Server Error');
-          return;
-        }
-
-        res.writeHead(200, { 'Content-Type': mimeType });
-        res.end(data);
-      });
+      else if (stats.isDirectory()) {
+          res_writeFolder(filePath,res);
+      }
+      else if (stats.isFile()) {
+          res_writeFile(filePath,res);
+      }
     });
+  });
+   // Listen to port
+   server.listen(port,()=>{
+    console.log("Serving UI - http://localhost:"+port);
+  });
+  server.on('error',(err)=>{
+    console.error("Unable to serve on "+port+". Port already in use.")
+  });
+  return server;
 }
 
-function serve_api(url, req, res) {
+function serve_api(port, target_dir, base_context){
+  const server = http.createServer((req, res) => {
+    // Enable CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      enableCORS(res,"200");
+      return res.end();;
+    }
     try {
+      let url = req.url;
+        console.log("API: Request URL: "+req.url);
         // Parse the context path from the URL
         const contextPath = new URL(url, `http://${req.headers.host}`).pathname;
 
-        // Remove '/api/' from the context path
-        const cleanedPath = contextPath.replace(/^\/api\//, '');
+        // Remove base_context from the context path
+        const cleanedPath = contextPath.replace("/^\/"+base_context+"\//", '');
 
         // Resolve the file path
         const fileName = path.basename(cleanedPath) + '.js';
-        const filePath = path.join(__dirname, 'api', fileName);
+        const filePath = path.join(__dirname, target_dir , fileName);
+        console.log("API: Executing File: "+filePath);
 
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
             res.statusCode = 404;
-            res.end(`API file ${fileName} not found.`);
+            res.end(`API ${url} not found.`);
             return;
         }
-
         // Require the file and execute the exported function
         const apiHandler = require(filePath);
         if (typeof apiHandler === 'function') {
@@ -96,9 +101,60 @@ function serve_api(url, req, res) {
             res.end(`API file ${fileName} does not export a valid function.`);
         }
     } catch (error) {
+        console.error(error);
         res.statusCode = 500;
         res.end(`Error processing API request: ${error.message}`);
     }
+  });
+  // Listen to port
+  server.listen(port,()=>{
+    console.log("Serving API - http://localhost:"+port);
+  });
+  server.on('error',(err)=>{
+    console.error("Unable to serve on "+port+". Port already in use.")
+  });
+  return server;
+}
+
+res_writeFolder = function(folder,res){
+  if(folder[folder.length-1]!="/")folder+="/"
+  fs.readFile(folder+"index.html", (err, data) => {
+    if (err || data==null) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 Internal Server Error');
+    }else{
+        res.writeHead(200, { 'Content-Type': "text/html" });
+        res.end(data);
+
+    }
+    
+  });
+}
+
+res_writeFile=function(file,res){
+  fs.readFile(file, (err, data) => {
+    if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end('500 Internal Server Error');
+    }
+    res.writeHead(200, { 'Content-Type': getContentType(file) });
+    res.end(data);
+  });
+}
+
+getContentType = function(filePath){
+  // Get the file extension
+  let type = path.extname(filePath).toLowerCase();
+
+  return MIME_TYPES[type] || 'application/octet-stream';
+}
+
+enableCORS = function(res,statusCode){
+  // Enable CORS preflight for OPTIONS requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
 }
 
 module.exports = { serve };
