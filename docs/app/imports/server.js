@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require('path');
 const { error } = require("console");
 
-const UI_TARGET = "../target/ui";
+const UI_TARGET = "target/ui";
 const API_TARGET = "../target/api";
 const UI_PORT = 9999;
 const API_PORT = 8888;
