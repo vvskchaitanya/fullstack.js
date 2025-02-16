@@ -136,7 +136,7 @@ res_writeFile=function(file,res){
   });
 }
 
-getContentType = function(file){
+getContentType = function(filePath){
   // Get the file extension
   let type = path.extname(filePath).toLowerCase();
 

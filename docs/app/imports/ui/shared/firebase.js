@@ -9,7 +9,7 @@ import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://
      */
     async function init() {
         try{
-            const config = await (await fetch("ui/firebase-config.json")).json();
+            const config = await (await fetch("firebase-config.json")).json();
             // Initialize Firebase
             console.log('Loading Firebase: ',config);
             this.app = initializeApp(config);

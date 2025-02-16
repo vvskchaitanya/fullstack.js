@@ -2,7 +2,7 @@
 let pages = [];
 let components = [];
 
-fetch('ui/bundle.json')
+fetch('bundle.json')
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
