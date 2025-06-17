@@ -1,6 +1,6 @@
 // Import Firebase modules from Google CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, startAfter, startAt } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, startAfter, startAt, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 (function (global) {
 
@@ -28,12 +28,15 @@ import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, s
      * @param {string} [options.docId] - Document ID to fetch a single document
      * @param {number} [options.size=20] - Number of documents per page when fetching collection
      * @param {Object} [options.lastDoc] - Last document from previous page for pagination
+     * @param {Object} [options.search] - Search options
+     * @param {string} [options.search.key] - Field name to search in
+     * @param {any} [options.search.value] - Value to search for
      * @returns {Promise<{data: Array<{id: string, [key: string]: any}>, hasMore: boolean, lastDoc: Object}>} Returns paginated data with the following properties:
      * - data: Array of documents with their IDs and data
      * - hasMore: Indicates if there are more documents available
      * - lastDoc: Last document from current page for pagination
      */
-    async function read(collectionName, options = {docId: null, size: 20, lastDoc: null}) {
+    async function read(collectionName, options = {docId: null, size: 20, lastDoc: null, search: { key: null, value: null }}) {
         if (options.docId) {
             const docRef = doc(this.db, collectionName, options.docId);
             const docSnap = await getDoc(docRef);
@@ -51,10 +54,28 @@ import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, s
             let q;
             if (!options.lastDoc) {
                 // First page
-                q = query(collectionRef, limit(pageSize + 1));
+                if (options.search?.key && options.search?.value !== null) {
+                    q = query(collectionRef, 
+                        where(options.search.key, '==', options.search.value),
+                        limit(pageSize + 1)
+                    );
+                } else {
+                    q = query(collectionRef, limit(pageSize + 1));
+                }
             } else {
                 // Subsequent pages using the last document as cursor
-                q = query(collectionRef, startAfter(options.lastDoc), limit(pageSize + 1));
+                if (options.search?.key && options.search?.value !== null) {
+                    q = query(collectionRef, 
+                        where(options.search.key, '==', options.search.value),
+                        startAfter(options.lastDoc),
+                        limit(pageSize + 1)
+                    );
+                } else {
+                    q = query(collectionRef, 
+                        startAfter(options.lastDoc),
+                        limit(pageSize + 1)
+                    );
+                }
             }
             
             const querySnapshot = await getDocs(q);
