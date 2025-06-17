@@ -1,6 +1,6 @@
 // Import Firebase modules from Google CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, startAfter, offset, startAt } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, startAfter, startAt } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 (function (global) {
 
@@ -28,11 +28,11 @@ import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, limit, s
      * @param {string} [options.docId] - Document ID to fetch a single document
      * @param {number} [options.size=20] - Number of documents per page when fetching collection
      * @param {Object} [options.lastDoc] - Last document from previous page for pagination
-     * @returns {Promise<{data: Array, hasMore: boolean, lastDoc: Object}>} - Returns paginated data
-     * @returns {Array} Returns.data - Array of documents with their IDs (single item array for docId query)
-     * @returns {boolean} Returns.hasMore - Always false for docId query, indicates more documents for collection query
-     * @returns {Object} Returns.lastDoc - Last document from current page (same as data[0] for docId query)
-    */
+     * @returns {Promise<{data: Array<{id: string, [key: string]: any}>, hasMore: boolean, lastDoc: Object}>} Returns paginated data with the following properties:
+     * - data: Array of documents with their IDs and data
+     * - hasMore: Indicates if there are more documents available
+     * - lastDoc: Last document from current page for pagination
+     */
     async function read(collectionName, options = {docId: null, size: 20, lastDoc: null}) {
         if (options.docId) {
             const docRef = doc(this.db, collectionName, options.docId);
