@@ -96,7 +96,6 @@ var new_f=[
     'source/ui/components/main/main.css',
     'source/ui/components/main/main.js',
     'source/ui/components/footer/footer.html',
-    'source/ui/components/footer/footer.css',
     'source/ui/pages/home.json',
 ]
 
