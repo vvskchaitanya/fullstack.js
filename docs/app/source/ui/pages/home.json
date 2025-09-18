@@ -3,6 +3,8 @@
   "path": "",
   "title": "Home",
   "components": [
-    "home"
+    "header",
+    "main",
+    "footer"
   ]
 }
