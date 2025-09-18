@@ -92,8 +92,11 @@ var new_f=[
     'imports/ui/shared/icon.png',
     'source/ui/components/header/header.html',
     'source/ui/components/header/header.css',
-    'source/ui/components/home/home.html',
-    'source/ui/components/home/home.css',
+    'source/ui/components/main/main.html',
+    'source/ui/components/main/main.css',
+    'source/ui/components/main/main.js',
+    'source/ui/components/footer/footer.html',
+    'source/ui/components/footer/footer.css',
     'source/ui/pages/home.json',
 ]
 
