@@ -8,13 +8,8 @@
         "start": "node index.js",
         "app": "node app.js",
         "build": "node index.js --build",
-        "build-app": "electron-builder build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "electron": "^34.0.2",
-        "electron-builder": "^25.1.8"
-    }
+    "license": "ISC"
 }
