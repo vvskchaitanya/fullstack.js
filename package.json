@@ -4,8 +4,7 @@
     "description": "Fullstack.js is a JavaScript framework designed to simplify the development of full-stack applications, seamlessly integrating both front-end (UI) and back-end (API) components.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
+        "test": "node docs/main.js"
     },
     "repository": {
         "type": "git",

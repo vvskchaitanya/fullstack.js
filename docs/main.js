@@ -133,11 +133,10 @@ rl.question("Fullstack App Name: ", (name) => {
       "npm run fetch",
       {stdio: 'inherit'}
     );
-    const child = spawn('npm', ['start'], { stdio: 'inherit' });
-
-    child.on('exit', (code) => {
-        console.log(`Process exited with code ${code}`);
-    });
+    execSync(
+      "npm start",
+      {stdio: 'inherit'}
+    );
     rl.close();
   })
   .catch((err)=>{
