@@ -56,23 +56,6 @@ bundle=function(){
             bundle_output.components.push(c);
         });
     }
-    if(!fs.existsSync(UI_PAGES)){
-        console.log("Compiler: No Directory \""+UI_PAGES+"\"");
-    }else{
-        var pages = fs.readdirSync(UI_PAGES);
-        pages.forEach(page =>{
-            if(page.indexOf(".json")>-1){
-            console.log("Compiler: Adding Page: "+page);
-            var pf = UI_PAGES +"/"+page;
-            var p = fs.existsSync(pf)?fs.readFileSync(pf, options):"";
-            if(p!=""){
-                files.push(pf);
-                p=JSON.parse(p);
-                bundle_output.pages.push(p);    
-            }
-        }
-        });
-    }
     
     /** Watch source file changes and recompile into bundle.json */
     if(watch.length==0 && files!=null && files.length!=0){

@@ -71,6 +71,7 @@ var files = [
     'imports/fullstack.js',
     'imports/ui/shared/loader.js',
     'imports/ui/shared/logger.js',
+    'imports/ui/shared/pages.js',
     'imports/ui/shared/firebase.js',
     'imports/dev/ui/develop/index.html',
     'imports/dev/ui/develop/script.js',
@@ -96,7 +97,7 @@ var new_f=[
     'source/ui/components/main/main.css',
     'source/ui/components/main/main.js',
     'source/ui/components/footer/footer.html',
-    'source/ui/pages/home.json',
+    'source/ui/pages/home/index.html',
 ]
 
 
