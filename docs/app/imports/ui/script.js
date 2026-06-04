@@ -22,9 +22,7 @@ fetch('bundle.json')
 
 // Function to load a page based on the path
 function goto(path) {
-    console.log("Goto: "+path)
-    Pages.go(path);
-    /*
+    console.log("Goto: "+path);
     const page = pages.find(p => p.path === path);
     var app = document.getElementById('app');
     app.innerHTML = "";
@@ -65,7 +63,6 @@ function goto(path) {
         }
         app.appendChild(p);
     }
-        */
 }
 
 Loader.init();
@@ -74,5 +71,5 @@ Pages.init();
 Firebase.init();
 
 load=function(){
-    goto(window.location.pathname.substring(1));
+    Pages.go(window.location.pathname.substring(1));
 }
