@@ -14,7 +14,7 @@
     // Load from app.config.json if it exists
     try {
       const response = await window.fetch('../app.config.json');
-      if (response.ok) {
+      if (response.ok && response.headers.get('Content-Type') && response.headers.get('Content-Type').includes('application/json')) {
         const appConfig = await response.json();
         if (appConfig.pages && appConfig.pages.ttl) {
           config.ttl = appConfig.pages.ttl;
