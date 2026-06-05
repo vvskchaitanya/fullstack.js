@@ -92,7 +92,7 @@
       
       // Fetch template (index.html)
       const templateRes = await window.fetch(`${pageBasePath}/index.html`);
-      if (!templateRes.ok) {
+      if (!templateRes.ok || !templateRes.headers.get('Content-Type') || !templateRes.headers.get('Content-Type').includes('text/html')) {
         console.warn(`Pages: Page '${path}' not found on server (${templateRes.status}).`);
         return null;
       }
@@ -102,7 +102,7 @@
       let script = '';
       try {
         const scriptRes = await window.fetch(`${pageBasePath}/script.js`);
-        if (scriptRes.ok) {
+        if (scriptRes.ok && scriptRes.headers.get('Content-Type') && scriptRes.headers.get('Content-Type').includes('javascript')) {
           script = await scriptRes.text();
         }
       } catch (e) {
@@ -112,19 +112,19 @@
       // Fetch styles (style.css) - optional
       let styles = '';
       try {
-        const stylesRes = await window.fetch(`${pageBasePath}/style.css`);
-        if (stylesRes.ok) {
+        const stylesRes = await window.fetch(`${pageBasePath}/styles.css`);
+        if (stylesRes.ok && stylesRes.headers.get('Content-Type') && stylesRes.headers.get('Content-Type').includes('css')) {
           styles = await stylesRes.text();
         }
       } catch (e) {
-        console.log(`Pages: No style.css found for '${path}'.`);
+        console.log(`Pages: No styles.css found for '${path}'.`);
       }
 
       // Create page object with timestamp
       const pageObject = {
         template: template,
         script: script,
-        styles: styles,
+        style: styles,
         time: Date.now()
       };
 
@@ -158,9 +158,9 @@
       // Add template content
       html += pageObject.template;
       
-      // Add style tag if styles exist
-      if (pageObject.styles && pageObject.styles.trim()) {
-        html += `<style>${pageObject.styles}</style>`;
+      // Add style tag if style exists
+      if (pageObject.style && pageObject.style.trim()) {
+        html += `<style>${pageObject.style}</style>`;
       }
       
       // Add script tag if script exists
