@@ -98,6 +98,8 @@ var new_f=[
     'source/ui/components/main/main.js',
     'source/ui/components/footer/footer.html',
     'source/ui/pages/home/index.html',
+    'source/ui/pages/home/script.js',
+    'source/ui/pages/home/styles.css'
 ]
 
 
