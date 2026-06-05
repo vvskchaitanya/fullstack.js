@@ -140,8 +140,9 @@
   }
 
   /**
-   * Refreshes document.body with the given page content (object with template, script, styles).
-   * @param {Object} pageObject - Object with {template, script, styles, time}.
+   * Refreshes document.body with the given page content (object with template, script, style).
+   * Uses appendChild for script and style elements instead of innerHTML concatenation.
+   * @param {Object} pageObject - Object with {template, script, style, time}.
    * @param {string} path - The page path, used as container div ID.
    */
   function refresh(pageObject, path) {
@@ -152,26 +153,35 @@
     }
 
     try {
-      // Create a wrapper div with ID = path
-      let html = `<div id="${path}">`;
-      
-      // Add template content
-      html += pageObject.template;
-      
-      // Add style tag if style exists
-      if (pageObject.style && pageObject.style.trim()) {
-        html += `<style>${pageObject.style}</style>`;
-      }
-      
-      // Add script tag if script exists
-      if (pageObject.script && pageObject.script.trim()) {
-        html += `<script>${pageObject.script}<\/script>`;
-      }
-      
-      html += '</div>';
+      // Clear document.body
+      document.body.innerHTML = '';
 
-      // Replace document.body content
-      document.body.innerHTML = html;
+      // Create wrapper div with ID = path
+      const wrapper = document.createElement('div');
+      wrapper.id = path;
+      
+      // Set template content using innerHTML
+      wrapper.innerHTML = pageObject.template;
+      
+      // Dynamically load and append script to wrapper
+      if (pageObject.script && pageObject.script.trim()) {
+        const scriptElement = document.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.innerHTML = pageObject.script;
+        wrapper.appendChild(scriptElement);
+      }
+
+      // Dynamically load and append styles to wrapper
+      if (pageObject.style && pageObject.style.trim()) {
+        const styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.innerHTML = pageObject.style;
+        wrapper.appendChild(styleElement);
+      }
+
+      // Append wrapper to body
+      document.body.appendChild(wrapper);
+
       const cacheAge = pageObject.time ? ` (cached ${Date.now() - pageObject.time}ms ago)` : '';
       console.log(`Pages: Refreshed document.body with page '${path}'${cacheAge}.`);
     } catch (error) {
