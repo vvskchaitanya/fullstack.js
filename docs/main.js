@@ -78,9 +78,8 @@ var files = [
     'imports/dev/ui/develop/style.css',
     'imports/dev/api/compile.js',
     'imports/dev/api/build.js',
-    'imports/dev/api/delete-component.js',
     'imports/dev/api/delete-page.js',
-    'imports/dev/api/save-component.js',
+    'imports/dev/api/get-page.js',
     'imports/dev/api/save-page.js'
 ];
 
