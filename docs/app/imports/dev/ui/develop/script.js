@@ -184,8 +184,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function recompile() {
-  const API_ENDPOINT = window.location.origin.replace("9999", "8888") + "/";
-  fetch(API_ENDPOINT + "compile")
+  // Reuse the already-declared API_ENDPOINT to avoid redeclaration errors
+  const endpoint = (typeof API_ENDPOINT !== 'undefined') ? API_ENDPOINT : window.location.origin.replace("9999", "8888") + "/";
+  fetch(endpoint + "compile")
     .then(() => window.location.reload())
     .catch(error => console.error("Compile error:", error));
 }
