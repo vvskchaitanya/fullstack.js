@@ -18,18 +18,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const pageEditor = document.getElementById("page-editor");
   const noPageSelected = document.getElementById("no-page-selected");
 
-  // Load pages from API
-  function loadPages() {
-    fetch("../bundle.json")
-      .then(response => response.json())
+
+  // Load pages list from the dev API. Pass true to include file contents in the response.
+  loadPages();
+
+  // Load pages from the backend dev API
+  function loadPages(includeContents = false) {
+    const url = API_ENDPOINT + 'get-page' + (includeContents ? '?contents=true' : '');
+    fetch(url)
+      .then(r => r.json())
       .then(data => {
+        if (!data || !data.success) {
+          console.error('Error loading pages:', data);
+          window.allPages = [];
+          populatePagesList([]);
+          return;
+        }
         window.allPages = data.pages || [];
         populatePagesList(window.allPages);
       })
-      .catch(error => console.error("Error fetching bundle.json:", error));
+      .catch(err => {
+        console.error('Error fetching pages from API:', err);
+        // fallback to empty list
+        window.allPages = [];
+        populatePagesList([]);
+      });
   }
-
-  loadPages();
 
   // Populate pages list
   function populatePagesList(pages) {
@@ -59,21 +73,28 @@ document.addEventListener("DOMContentLoaded", () => {
     editorTitle.textContent = page.name;
     editorSubtitle.textContent = `Path: ${page.path || "/"} `;
 
-    // Fetch page files
-    fetch(`../pages/${page.name}/index.html`)
-      .then(r => r.text())
-      .then(html => htmlEditor.value = html)
-      .catch(() => htmlEditor.value = "");
+    // Use contents returned by the API when available, otherwise fetch
+    if (page.template || page.script || page.style) {
+      htmlEditor.value = page.template || '';
+      scriptEditor.value = page.script || '';
+      styleEditor.value = page.style || '';
+    } else {
+      // Fetch page files
+      fetch(`../pages/${page.name}/index.html`)
+        .then(r => r.text())
+        .then(html => htmlEditor.value = html)
+        .catch(() => htmlEditor.value = "");
 
-    fetch(`../pages/${page.name}/script.js`)
-      .then(r => r.text())
-      .then(script => scriptEditor.value = script)
-      .catch(() => scriptEditor.value = "");
+      fetch(`../pages/${page.name}/script.js`)
+        .then(r => r.text())
+        .then(script => scriptEditor.value = script)
+        .catch(() => scriptEditor.value = "");
 
-    fetch(`../pages/${page.name}/style.css`)
-      .then(r => r.text())
-      .then(style => styleEditor.value = style)
-      .catch(() => styleEditor.value = "");
+      fetch(`../pages/${page.name}/style.css`)
+        .then(r => r.text())
+        .then(style => styleEditor.value = style)
+        .catch(() => styleEditor.value = "");
+    }
 
     // Show editor, hide no-selection message
     pageEditor.classList.remove("d-none");
