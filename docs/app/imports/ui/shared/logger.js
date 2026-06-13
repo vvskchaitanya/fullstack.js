@@ -3,6 +3,7 @@
 
   /**
    * Initializes the logger by creating a styled textarea and appending it to the document body.
+   * Also overrides native console methods (log, error, info, debug) to use Logger.
    */
   function init() {
     if (loggerElement) {
@@ -30,10 +31,65 @@
     loggerElement.style.zIndex = '10000';
 
     loggerElement.readOnly = true;
-    let log = sessionStorage.getItem("logger");
-    if(log!=null && log=="true"){
+    
+    // Check URL parameter first (logger=true or logger=false)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLoggerParam = urlParams.get("logger");
+    
+    if (urlLoggerParam !== null) {
+      // If URL param exists, set it in sessionStorage (true or false)
+      sessionStorage.setItem("logger", urlLoggerParam);
+      console.log(`Logger: URL parameter 'logger=${urlLoggerParam}' set in sessionStorage.`);
+    }
+    
+    // Now check sessionStorage to decide whether to enable logger
+    const sessionStorageLogger = sessionStorage.getItem("logger");
+    const enableLogger = sessionStorageLogger === "true";
+    
+    if (enableLogger) {
       document.body.appendChild(loggerElement);
     }
+
+    // Override native console methods to use Logger
+    const originalConsole = {
+      log: window.console.log,
+      error: window.console.error,
+      info: window.console.info,
+      debug: window.console.debug,
+      warn: window.console.warn
+    };
+
+    window.console.log = function(...args) {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      log('info', message);
+      originalConsole.log.apply(console, args); // Also call original for browser console
+    };
+
+    window.console.error = function(...args) {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      log('error', message);
+      originalConsole.error.apply(console, args);
+    };
+
+    window.console.info = function(...args) {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      log('info', message);
+      originalConsole.info.apply(console, args);
+    };
+
+    window.console.debug = function(...args) {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      log('info', message);
+      originalConsole.debug.apply(console, args);
+    };
+
+    window.console.warn = function(...args) {
+      const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
+      log('warn', message);
+      originalConsole.warn.apply(console, args);
+    };
+
+    console.log('Logger initialized and console methods overridden.');
   }
 
   /**

@@ -141,11 +141,12 @@
 
   /**
    * Refreshes document.body with the given page content (object with template, script, style).
+   * Replaces component tags like <$header></$header> by fetching the component page and embedding it.
    * Uses appendChild for script and style elements instead of innerHTML concatenation.
    * @param {Object} pageObject - Object with {template, script, style, time}.
    * @param {string} path - The page path, used as container div ID.
    */
-  function refresh(pageObject, path) {
+  async function refresh(pageObject, path) {
     if (!pageObject || !pageObject.template) {
       console.warn('Pages: No page object or template provided for refresh.');
       document.body.innerHTML = '<div class="page-error">Page content is empty.</div>';
@@ -160,8 +161,11 @@
       const wrapper = document.createElement('div');
       wrapper.id = path;
       
-      // Set template content using innerHTML
-      wrapper.innerHTML = pageObject.template;
+  // Set template content using innerHTML
+  wrapper.innerHTML = pageObject.template;
+
+  // Process component tags inside wrapper (e.g., <$header></$header>)
+  await processComponentTags(wrapper);
       
       // Dynamically load and append script to wrapper
       if (pageObject.script && pageObject.script.trim()) {
@@ -219,7 +223,63 @@
 
     // Update current path and refresh
     currentPath = path;
-    refresh(pageObject, path);
+    await refresh(pageObject, path);
+  }
+
+  /**
+   * Find component tags of the form <$name></$name> inside a root element,
+   * fetch the component (from pages/name), and replace the tag with the component content.
+   * This is recursive: components can themselves include other component tags.
+   * @param {Element} root
+   */
+  async function processComponentTags(root) {
+    // Find all elements matching the pattern: tag name starts with '$'
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
+    const nodesToProcess = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.tagName && node.tagName.startsWith('$')) {
+        nodesToProcess.push(node);
+      }
+    }
+
+    for (const node of nodesToProcess) {
+      const tag = node.tagName; // e.g., "$HEADER"
+      const compName = tag.slice(1).toLowerCase();
+      try {
+        const compPage = await fetch(compName);
+        if (compPage && compPage.template) {
+          // Create a container for the component
+          const compWrapper = document.createElement('div');
+          compWrapper.id = compName;
+          compWrapper.innerHTML = compPage.template;
+
+          // Append script then style for component
+          if (compPage.script && compPage.script.trim()) {
+            const s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.innerHTML = compPage.script;
+            compWrapper.appendChild(s);
+          }
+          if (compPage.style && compPage.style.trim()) {
+            const st = document.createElement('style');
+            st.type = 'text/css';
+            st.innerHTML = compPage.style;
+            compWrapper.appendChild(st);
+          }
+
+          // Replace node with compWrapper
+          node.parentNode.replaceChild(compWrapper, node);
+
+          // Recursively process newly inserted content
+          await processComponentTags(compWrapper);
+        } else {
+          console.warn(`Pages: Component '${compName}' not found or empty.`);
+        }
+      } catch (e) {
+        console.error(`Pages: Error loading component '${compName}':`, e);
+      }
+    }
   }
 
   /**

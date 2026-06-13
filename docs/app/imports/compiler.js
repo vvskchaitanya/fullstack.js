@@ -26,49 +26,13 @@ compile = function(){
 
     /** Copy complete source/ui into target/ui */
     copyRecursive(SOURCE+UI,TARGET+UI);
-
-    /** Convert source/pages into target/bundle.json */
-    bundle();
-}
-
-bundle=function(){
-    var bundle_output = { pages:[],components:[]};
-    var UI_COMPONENTS = SOURCE+UI+COMPONENTS;
-    var UI_PAGES = SOURCE+UI+PAGES;
-    var files = [];
-    if(!fs.existsSync(UI_COMPONENTS)){
-        console.log("Compiler: No Directory \""+UI_COMPONENTS+"\"");
-    }else{
-        var components = fs.readdirSync(UI_COMPONENTS);
-        components.forEach(component =>{
-            var c = {};
-            c.name = component;
-            console.log("Compiler: Adding Component: "+component);
-            var template = UI_COMPONENTS +"/"+ component + "/"+component+".html";
-            var script = UI_COMPONENTS +"/"+ component + "/"+component+".js";
-            var style = UI_COMPONENTS +"/"+ component + "/"+component+".css";
-            c.template = fs.existsSync(template)?fs.readFileSync(template, options):"";
-            c.script = fs.existsSync(script)?fs.readFileSync(script, options):"";
-            c.style = fs.existsSync(style)?fs.readFileSync(style, options):"";
-            [template,script,style].forEach(f=>{
-                fs.existsSync(f)?files.push(f):"";
-            });
-            bundle_output.components.push(c);
-        });
-    }
-    
-    /** Watch source file changes and recompile into bundle.json */
-    if(watch.length==0 && files!=null && files.length!=0){
-        watch = files;
-        watcher();
-    }
-    fs.writeFileSync(TARGET+UI+"/bundle.json",JSON.stringify(bundle_output));
 }
 
 watcher=function(){
     watch.forEach(path=>{
         fs.watch(path, (event,file)=>{
-            bundle();
+            /** Copy complete source/ui into target/ui */
+            copyRecursive(SOURCE+UI,TARGET+UI);
         });
     });
 }
