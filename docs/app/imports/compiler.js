@@ -39,7 +39,7 @@ watcher=function(){
 
 develop = function(){
     if(fs.existsSync("imports/dev/ui/develop")){
-        copyRecursive("imports/dev/ui/develop","target/ui/develop");
+        copyRecursive("imports/dev/ui/develop","target/ui/pages/develop");
     }
     if(fs.existsSync("imports/dev/api")){
         copyRecursive("imports/dev/api","target/api/");
